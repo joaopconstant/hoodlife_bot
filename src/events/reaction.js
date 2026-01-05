@@ -28,8 +28,19 @@ export async function handleReactionAdd(reaction, user) {
 
   try {
     const member = await guild.members.fetch(user.id);
+
+    // Adicionar o novo cargo
     await member.roles.add(config.targetRoleId);
-    console.log(`[+] Cargo adicionado para usuário: ${user.tag}`);
+
+    // Remover o cargo antigo (se o usuário possuir)
+    if (member.roles.cache.has(config.roleToRemoveId)) {
+      await member.roles.remove(config.roleToRemoveId);
+      console.log(
+        `[+] Cargo adicionado e cargo antigo removido para: ${user.tag}`
+      );
+    } else {
+      console.log(`[+] Cargo adicionado para usuário: ${user.tag}`);
+    }
   } catch (err) {
     console.error("Falha ao adicionar cargo:", err);
   }

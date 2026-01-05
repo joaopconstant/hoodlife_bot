@@ -8,5 +8,6 @@ export const config = {
   // Bot configuration constants
   targetMessageId: "1457522794920153315",
   targetRoleId: "1423494445805867148",
+  roleToRemoveId: "1454110873504190506",
   targetEmoji: "✅", // :white_check_mark:
 };
