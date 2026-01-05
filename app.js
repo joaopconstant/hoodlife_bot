@@ -1,5 +1,14 @@
 import express from "express";
-import { Client, GatewayIntentBits, Partials, EmbedBuilder } from "discord.js";
+import {
+  Client,
+  GatewayIntentBits,
+  Partials,
+  EmbedBuilder,
+  ActionRowBuilder,
+  ModalBuilder,
+  TextInputBuilder,
+  TextInputStyle,
+} from "discord.js";
 import { config } from "./src/config.js";
 import { handleReactionAdd } from "./src/events/reaction.js";
 
@@ -23,41 +32,92 @@ client.on("ready", () => {
 client.on("messageReactionAdd", handleReactionAdd);
 
 client.on("interactionCreate", async (interaction) => {
-  if (!interaction.isChatInputCommand()) return;
+  // Handle Slash Commands
+  if (interaction.isChatInputCommand()) {
+    if (interaction.commandName === "embed") {
+      const modal = new ModalBuilder()
+        .setCustomId("embedModal")
+        .setTitle("Criar Embed");
 
-  if (interaction.commandName === "embed") {
-    const title = interaction.options.getString("title");
-    const description = interaction.options.getString("description");
-    const color = interaction.options.getString("color");
-    const image = interaction.options.getString("image");
-    const footer = interaction.options.getString("footer");
+      const titleInput = new TextInputBuilder()
+        .setCustomId("embedTitle")
+        .setLabel("Título")
+        .setStyle(TextInputStyle.Short)
+        .setRequired(false);
 
-    try {
-      const embed = new EmbedBuilder();
+      const descriptionInput = new TextInputBuilder()
+        .setCustomId("embedDescription")
+        .setLabel("Descrição")
+        .setStyle(TextInputStyle.Paragraph)
+        .setRequired(false);
 
-      if (title) embed.setTitle(title);
-      if (description) embed.setDescription(description);
-      if (color) embed.setColor(color);
-      if (image) embed.setImage(image);
-      if (footer) embed.setFooter({ text: footer });
+      const colorInput = new TextInputBuilder()
+        .setCustomId("embedColor")
+        .setLabel("Cor Hex (ex: #FF0000)")
+        .setStyle(TextInputStyle.Short)
+        .setRequired(false);
 
-      await interaction.channel.send({ embeds: [embed] });
-      await interaction.reply({
-        content: "Embed enviado com sucesso!",
-        ephemeral: true,
-      });
-    } catch (error) {
-      console.error(error);
-      if (interaction.replied || interaction.deferred) {
-        await interaction.followUp({
-          content:
-            "Erro ao enviar embed. Verifique se os dados estão corretos (ex: código de cor válido).",
+      const imageInput = new TextInputBuilder()
+        .setCustomId("embedImage")
+        .setLabel("URL da Imagem")
+        .setStyle(TextInputStyle.Short)
+        .setRequired(false);
+
+      const footerInput = new TextInputBuilder()
+        .setCustomId("embedFooter")
+        .setLabel("Texto do Rodapé")
+        .setStyle(TextInputStyle.Short)
+        .setRequired(false);
+
+      const firstActionRow = new ActionRowBuilder().addComponents(titleInput);
+      const secondActionRow = new ActionRowBuilder().addComponents(
+        descriptionInput
+      );
+      const thirdActionRow = new ActionRowBuilder().addComponents(colorInput);
+      const fourthActionRow = new ActionRowBuilder().addComponents(imageInput);
+      const fifthActionRow = new ActionRowBuilder().addComponents(footerInput);
+
+      modal.addComponents(
+        firstActionRow,
+        secondActionRow,
+        thirdActionRow,
+        fourthActionRow,
+        fifthActionRow
+      );
+
+      await interaction.showModal(modal);
+    }
+  }
+
+  // Handle Modal Submissions
+  if (interaction.isModalSubmit()) {
+    if (interaction.customId === "embedModal") {
+      const title = interaction.fields.getTextInputValue("embedTitle");
+      const description =
+        interaction.fields.getTextInputValue("embedDescription");
+      const color = interaction.fields.getTextInputValue("embedColor");
+      const image = interaction.fields.getTextInputValue("embedImage");
+      const footer = interaction.fields.getTextInputValue("embedFooter");
+
+      try {
+        const embed = new EmbedBuilder();
+
+        if (title) embed.setTitle(title);
+        if (description) embed.setDescription(description);
+        if (color) embed.setColor(color);
+        if (image) embed.setImage(image);
+        if (footer) embed.setFooter({ text: footer });
+
+        await interaction.channel.send({ embeds: [embed] });
+        await interaction.reply({
+          content: "Embed enviado com sucesso!",
           ephemeral: true,
         });
-      } else {
+      } catch (error) {
+        console.error(error);
         await interaction.reply({
           content:
-            "Erro ao enviar embed. Verifique se os dados estão corretos (ex: código de cor válido).",
+            "Erro ao criar embed. Verifique se o código de cor é válido.",
           ephemeral: true,
         });
       }
