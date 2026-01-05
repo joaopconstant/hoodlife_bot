@@ -1,6 +1,6 @@
-import 'dotenv/config';
-import { getRPSChoices } from './game.js';
-import { capitalize, InstallGlobalCommands } from './utils.js';
+import "dotenv/config";
+import { getRPSChoices } from "./game.js";
+import { capitalize, InstallGlobalCommands } from "./utils.js";
 
 // Get the game choices from game.js
 function createCommandChoices() {
@@ -19,8 +19,8 @@ function createCommandChoices() {
 
 // Simple test command
 const TEST_COMMAND = {
-  name: 'test',
-  description: 'Basic command',
+  name: "test",
+  description: "Basic command",
   type: 1,
   integration_types: [0, 1],
   contexts: [0, 1, 2],
@@ -28,13 +28,13 @@ const TEST_COMMAND = {
 
 // Command containing options
 const CHALLENGE_COMMAND = {
-  name: 'challenge',
-  description: 'Challenge to a match of rock paper scissors',
+  name: "challenge",
+  description: "Challenge to a match of rock paper scissors",
   options: [
     {
       type: 3,
-      name: 'object',
-      description: 'Pick your object',
+      name: "object",
+      description: "Pick your object",
       required: true,
       choices: createCommandChoices(),
     },
@@ -44,6 +44,45 @@ const CHALLENGE_COMMAND = {
   contexts: [0, 2],
 };
 
-const ALL_COMMANDS = [TEST_COMMAND, CHALLENGE_COMMAND];
+// Command to create a custom embed
+const EMBED_COMMAND = {
+  name: "embed",
+  description: "Crie e envie um embed personalizado",
+  options: [
+    {
+      type: 3, // String
+      name: "title",
+      description: "O título do embed",
+      required: false,
+    },
+    {
+      type: 3, // String
+      name: "description",
+      description: "A descrição do embed",
+      required: false,
+    },
+    {
+      type: 3, // String
+      name: "color",
+      description: "Cor em Hex (ex: #FF0000)",
+      required: false,
+    },
+    {
+      type: 3, // String
+      name: "image",
+      description: "URL da imagem",
+      required: false,
+    },
+    {
+      type: 3, // String
+      name: "footer",
+      description: "Texto do rodapé",
+      required: false,
+    },
+  ],
+  type: 1,
+};
+
+const ALL_COMMANDS = [TEST_COMMAND, CHALLENGE_COMMAND, EMBED_COMMAND];
 
 InstallGlobalCommands(process.env.APP_ID, ALL_COMMANDS);
