@@ -9,8 +9,8 @@
     "node": ">=18.x"
   },
   "scripts": {
-    "start": "node app.js",
-    "dev": "nodemon app.js"
+    "start": "node commands.js && node app.js",
+    "dev": "node commands.js && nodemon app.js"
   },
   "author": "Shay DeWael",
   "license": "MIT",
