@@ -34,30 +34,3 @@ export async function handleReactionAdd(reaction, user) {
     console.error("Falha ao adicionar cargo:", err);
   }
 }
-
-export async function handleReactionRemove(reaction, user) {
-  if (user.bot) return;
-
-  if (reaction.partial) {
-    try {
-      await reaction.fetch();
-    } catch (error) {
-      console.error("Erro ao buscar mensagem (ReactionRemove):", error);
-      return;
-    }
-  }
-
-  if (reaction.message.id !== config.targetMessageId) return;
-  if (reaction.emoji.name !== config.targetEmoji) return;
-
-  const guild = reaction.message.guild;
-  if (!guild) return;
-
-  try {
-    const member = await guild.members.fetch(user.id);
-    await member.roles.remove(config.targetRoleId);
-    console.log(`[-] Cargo removido de usuário: ${user.tag}`);
-  } catch (err) {
-    console.error("Falha ao remover cargo:", err);
-  }
-}
