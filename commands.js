@@ -39,6 +39,6 @@ const EMBED_COMMAND = {
   type: 1,
 };
 
-const ALL_COMMANDS = [TEST_COMMAND, CHALLENGE_COMMAND, EMBED_COMMAND];
+const ALL_COMMANDS = [EMBED_COMMAND];
 
 InstallGlobalCommands(process.env.APP_ID, ALL_COMMANDS);
