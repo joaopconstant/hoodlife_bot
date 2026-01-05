@@ -98,21 +98,39 @@ client.on("messageReactionAdd", handleReactionAdd);
 
 client.on("interactionCreate", async (interaction) => {
   // 1. Initial Slash Command
-  if (interaction.isChatInputCommand() && interaction.commandName === "embed") {
-    const initialState = {
-      title: "Novo Embed",
-      description: "Clique nos botões abaixo para editar este conteúdo!",
-      color: "#2b2d31",
-    };
-    embedStates.set(interaction.user.id, initialState);
+  if (interaction.isChatInputCommand()) {
+    if (interaction.commandName === "embed") {
+      const initialState = {
+        title: "Novo Embed",
+        description: "Clique nos botões abaixo para editar este conteúdo!",
+        color: "#2b2d31",
+      };
+      embedStates.set(interaction.user.id, initialState);
 
-    await interaction.reply({
-      content:
-        "**Construtor de Embed Interativo**\nConfigure seu embed e clique em Enviar.",
-      embeds: [buildEmbedFromState(initialState)],
-      components: getEmbedBuilderRow(),
-      ephemeral: true,
-    });
+      await interaction.reply({
+        content:
+          "**Construtor de Embed Interativo**\nConfigure seu embed e clique em Enviar.",
+        embeds: [buildEmbedFromState(initialState)],
+        components: getEmbedBuilderRow(),
+        ephemeral: true,
+      });
+    } else if (interaction.commandName === "say") {
+      const message = interaction.options.getString("mensagem");
+
+      try {
+        await interaction.channel.send(message);
+        await interaction.reply({
+          content: "Mensagem enviada!",
+          ephemeral: true,
+        });
+      } catch (error) {
+        console.error(error);
+        await interaction.reply({
+          content: "Erro ao enviar a mensagem.",
+          ephemeral: true,
+        });
+      }
+    }
   }
 
   // 2. Button Interactions

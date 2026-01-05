@@ -7,6 +7,20 @@ const EMBED_COMMAND = {
   type: 1,
 };
 
-const ALL_COMMANDS = [EMBED_COMMAND];
+const SAY_COMMAND = {
+  name: "say",
+  description: "Faz o bot dizer uma mensagem simples",
+  options: [
+    {
+      type: 3, // String
+      name: "mensagem",
+      description: "A mensagem que o bot deve enviar",
+      required: true,
+    },
+  ],
+  type: 1,
+};
+
+const ALL_COMMANDS = [EMBED_COMMAND, SAY_COMMAND];
 
 InstallGlobalCommands(process.env.APP_ID, ALL_COMMANDS);
