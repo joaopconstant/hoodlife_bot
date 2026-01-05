@@ -1,10 +1,7 @@
 import express from "express";
 import { Client, GatewayIntentBits, Partials } from "discord.js";
 import { config } from "./src/config.js";
-import {
-  handleReactionAdd,
-  handleReactionRemove,
-} from "./src/events/reaction.js";
+import { handleReactionAdd } from "./src/events/reaction.js";
 
 const app = express();
 
@@ -24,7 +21,6 @@ client.on("ready", () => {
 
 // Event Listeners
 client.on("messageReactionAdd", handleReactionAdd);
-client.on("messageReactionRemove", handleReactionRemove);
 
 client.login(config.token);
 

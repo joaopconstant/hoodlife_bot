@@ -1,4 +1,4 @@
-# Hoodlife Bot 🚀
+# Hoodlife Bot
 
 Bot oficial do servidor **Hoodlife**, desenvolvido para gerenciar cargos e interações automáticas.
 
