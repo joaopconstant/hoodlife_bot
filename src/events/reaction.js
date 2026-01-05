@@ -36,10 +36,10 @@ export async function handleReactionAdd(reaction, user) {
     if (member.roles.cache.has(config.roleToRemoveId)) {
       await member.roles.remove(config.roleToRemoveId);
       console.log(
-        `[+] Cargo adicionado e cargo antigo removido para: ${user.tag}`
+        `[+] Cargo 'Whitelisted' adicionado e cargo 'Visitor' removido para: ${user.tag}`
       );
     } else {
-      console.log(`[+] Cargo adicionado para usuário: ${user.tag}`);
+      console.log(`[+] Cargo 'Whitelisted' adicionado para usuário: ${user.tag}`);
     }
   } catch (err) {
     console.error("Falha ao adicionar cargo:", err);
