@@ -14,6 +14,10 @@ import {
 import { config } from "./src/config.js";
 import { handleReactionAdd } from "./src/events/reaction.js";
 
+// ============================================
+// CONFIGURAÇÃO DO BOT
+// ============================================
+
 const app = express();
 
 // Initialize Discord Client
@@ -29,6 +33,10 @@ const client = new Client({
 client.on("ready", () => {
   console.log(`Bot logged in as ${client.user.tag}!`);
 });
+
+// ============================================
+// SISTEMA DE EMBED INTERATIVO (/embed)
+// ============================================
 
 // State for the interactive embed builder
 const embedStates = new Map();
@@ -93,8 +101,14 @@ function buildEmbedFromState(state) {
   return embed;
 }
 
-// Event Listeners
+// ============================================
+// EVENT LISTENERS
+// ============================================
+
+// Sistema de cargo por reação
 client.on("messageReactionAdd", handleReactionAdd);
+
+// Comandos slash e interações
 
 client.on("interactionCreate", async (interaction) => {
   // 1. Initial Slash Command
@@ -294,9 +308,13 @@ client.on("interactionCreate", async (interaction) => {
   }
 });
 
+// ============================================
+// INICIALIZAÇÃO
+// ============================================
+
 client.login(config.token);
 
-// Simple Express server to keep the process alive
+// Servidor Express para manter o processo ativo
 app.get("/", (req, res) => {
   res.send("Bot is running and listening for reactions!");
 });
