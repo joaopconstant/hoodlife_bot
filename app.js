@@ -24,7 +24,7 @@ const app = express();
 const client = new Client({
   intents: [
     GatewayIntentBits.Guilds,
-    GatewayIntentBits.GuildMembers, // Necessário para gerenciar cargos
+    GatewayIntentBits.GuildMembers,
     GatewayIntentBits.GuildMessages,
     GatewayIntentBits.GuildMessageReactions,
   ],
@@ -322,9 +322,10 @@ client.login(config.token);
 
 // Servidor Express para manter o processo ativo
 app.get("/", (req, res) => {
-  res.send("Bot is running and listening for reactions!");
+  res.send("Bot is running!");
 });
 
 app.listen(config.port, () => {
   console.log("HTTP Server running on port", config.port);
 });
+
