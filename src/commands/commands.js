@@ -21,6 +21,12 @@ const SAY_COMMAND = {
   type: 1,
 };
 
-const ALL_COMMANDS = [EMBED_COMMAND, SAY_COMMAND];
+const SETUP_WHITELIST_COMMAND = {
+  name: "setup_whitelist",
+  description: "Configura a mensagem do sistema de whitelist neste canal",
+  type: 1,
+};
+
+const ALL_COMMANDS = [EMBED_COMMAND, SAY_COMMAND, SETUP_WHITELIST_COMMAND];
 
 InstallGlobalCommands(process.env.APP_ID, ALL_COMMANDS);

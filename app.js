@@ -10,9 +10,10 @@ import {
   TextInputStyle,
   ButtonBuilder,
   ButtonStyle,
+  PermissionsBitField,
 } from "discord.js";
 import { config } from "./src/config.js";
-import { handleReactionAdd } from "./src/events/reaction.js";
+import { handleWhitelistInteractions } from "./src/events/whitelist.js";
 
 // ============================================
 // CONFIGURAÇÃO DO BOT
@@ -111,12 +112,13 @@ function buildEmbedFromState(state) {
 // EVENT LISTENERS
 // ============================================
 
-// Sistema de cargo por reação
-client.on("messageReactionAdd", handleReactionAdd);
-
 // Comandos slash e interações
 
 client.on("interactionCreate", async (interaction) => {
+  // Passa a interação para o gerenciador de whitelist
+  const handled = await handleWhitelistInteractions(interaction);
+  if (handled) return;
+
   // 1. Initial Slash Command
   if (interaction.isChatInputCommand()) {
     if (interaction.commandName === "embed") {
@@ -150,6 +152,32 @@ client.on("interactionCreate", async (interaction) => {
           ephemeral: true,
         });
       }
+    } else if (interaction.commandName === "setup_whitelist") {
+      if (!interaction.member.permissions.has(PermissionsBitField.Flags.Administrator)) {
+        return interaction.reply({
+          content: "Você precisa ser Administrador para usar este comando.",
+          ephemeral: true
+        });
+      }
+
+      const embed = new EmbedBuilder()
+        .setTitle("Formulário de Whitelist")
+        .setDescription("Clique no botão abaixo para iniciar o seu teste de whitelist. Um canal privado será criado para você responder às perguntas.")
+        .setImage("https://r2.fivemanage.com/vwT8N75a6ApSQgOuFrwhH/whitelist2.png")
+        .setColor("#5865F2");
+
+      const row = new ActionRowBuilder().addComponents(
+        new ButtonBuilder()
+          .setCustomId("start_whitelist")
+          .setLabel("Iniciar Whitelist")
+          .setStyle(ButtonStyle.Primary)
+      );
+
+      await interaction.channel.send({ embeds: [embed], components: [row] });
+      await interaction.reply({
+        content: "Mensagem de whitelist configurada com sucesso neste canal!",
+        ephemeral: true
+      });
     }
   }
 
