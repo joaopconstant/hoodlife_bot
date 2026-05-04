@@ -196,7 +196,6 @@ async function finishWhitelist(userId, channel, member) {
   const embed = new EmbedBuilder()
     .setTitle("Resultado da Whitelist")
     .setDescription(resultMessage)
-    .setImage("https://r2.fivemanage.com/vwT8N75a6ApSQgOuFrwhH/whitelist.png")
     .setColor(isApproved ? "Green" : "Red");
 
   await channel.send({ embeds: [embed] });
