@@ -162,7 +162,7 @@ client.on("interactionCreate", async (interaction) => {
 
       const embed = new EmbedBuilder()
         .setTitle("Formulário de Whitelist")
-        .setDescription("Clique no botão abaixo para iniciar o seu teste de whitelist. Um canal privado será criado para você responder às perguntas.")
+        .setDescription("Clique no botão abaixo para iniciar o seu teste de whitelist. Um canal privado será criado para você responder às perguntas. Certifique-se de ler atentamente as regras, disponíveis no nosso [Gitbook](https://hoodlife.gitbook.io/docs).")
         .setImage("https://r2.fivemanage.com/vwT8N75a6ApSQgOuFrwhH/whitelist2.png")
         .setColor("#5865F2");
 
