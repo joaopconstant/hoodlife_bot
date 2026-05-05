@@ -11,6 +11,9 @@ import { questions } from "../utils/questions.js";
 // Armazena a sessão ativa de whitelist de cada usuário
 export const whitelistSessions = new Map();
 
+// Armazena o timestamp de quando o usuário reprovou (Cooldown de 2 horas)
+export const whitelistTimeouts = new Map();
+
 function shuffleArray(array) {
   for (let i = array.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
@@ -27,6 +30,27 @@ export async function handleWhitelistInteractions(interaction) {
         content: "Você já possui uma whitelist em andamento!",
         ephemeral: true,
       });
+    }
+
+    // Verifica se o usuário está em cooldown (timeout de 2 horas)
+    if (whitelistTimeouts.has(interaction.user.id)) {
+      const timeoutTime = whitelistTimeouts.get(interaction.user.id);
+      const currentTime = Date.now();
+      const twoHours = 2 * 60 * 60 * 1000;
+
+      if (currentTime - timeoutTime < twoHours) {
+        const remainingTime = twoHours - (currentTime - timeoutTime);
+        const hours = Math.floor(remainingTime / (60 * 60 * 1000));
+        const minutes = Math.floor((remainingTime % (60 * 60 * 1000)) / (60 * 1000));
+        
+        return interaction.reply({
+          content: `Você reprovou recentemente e deve aguardar **${hours}h ${minutes}min** para tentar novamente.`,
+          ephemeral: true,
+        });
+      } else {
+        // Cooldown expirado, remove do Map
+        whitelistTimeouts.delete(interaction.user.id);
+      }
     }
 
     const guild = interaction.guild;
@@ -190,7 +214,9 @@ async function finishWhitelist(userId, channel, member) {
       console.error("Erro ao aplicar cargos da whitelist:", err);
     }
   } else {
-    resultMessage = `**Infelizmente você reprovou.**\nVocê não atingiu o critério mínimo (Pontuação: ${totalScore}).\n\nO canal será fechado em 10 segundos.`;
+    resultMessage = `**Infelizmente você reprovou.**\nVocê não atingiu o critério mínimo (Pontuação: ${totalScore}).\n\nVocê poderá tentar novamente em 2 horas.\nO canal será fechado em 10 segundos.`;
+    // Define o timeout de 2 horas
+    whitelistTimeouts.set(userId, Date.now());
   }
 
   const embed = new EmbedBuilder()
